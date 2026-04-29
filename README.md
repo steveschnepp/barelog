@@ -1,4 +1,4 @@
-# OpenLog Firmware
+# BareLog Firmware (OpenLog reimplementation)
 
 Clean-room C99 reimplementation of the SparkFun OpenLog firmware for the
 ATmega328P. No Arduino runtime, no external libraries, no dynamic allocation.
