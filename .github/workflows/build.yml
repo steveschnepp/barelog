@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@latest
+        uses: actions/checkout@v4
         
 
       - name: Set up Docker Buildx
@@ -43,7 +43,7 @@ jobs:
             make PLATFORM=${{ matrix.platform }} size
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: barelog-${{ matrix.platform }}
           path: build_${{ matrix.platform }}/barelog.*
@@ -54,7 +54,7 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check for trailing whitespace
         run: |
