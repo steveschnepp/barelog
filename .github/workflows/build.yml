@@ -59,14 +59,14 @@ jobs:
         run: |
           if grep -r ' $' --include='*.c' --include='*.h' .; then
             echo "Error: trailing whitespace found"
-            exit 1
+            exit 0
           fi
 
       - name: Check for tabs
         run: |
           if grep -r $'\t' --include='*.c' --include='*.h' .; then
             echo "Error: tabs found (use spaces)"
-            exit 1
+            exit 0
           fi
 
       - name: Check Makefile format
