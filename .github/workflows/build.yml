@@ -1,0 +1,75 @@
+name: Build barelog (all platforms)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        platform: [atmega328p, ch32v203, rp2040, nrf52840, esp32s3]
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile_optimized
+          push: false
+          load: true
+          tags: barelog:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build ${{ matrix.platform }}
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/workspace \
+            barelog:ci \
+            make PLATFORM=${{ matrix.platform }} size
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: barelog-${{ matrix.platform }}
+          path: build_${{ matrix.platform }}/barelog.*
+          retention-days: 30
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Check for trailing whitespace
+        run: |
+          if grep -r ' $' --include='*.c' --include='*.h' .; then
+            echo "Error: trailing whitespace found"
+            exit 1
+          fi
+
+      - name: Check for tabs
+        run: |
+          if grep -r $'\t' --include='*.c' --include='*.h' .; then
+            echo "Error: tabs found (use spaces)"
+            exit 1
+          fi
+
+      - name: Check Makefile format
+        run: |
+          if grep -v '^[[:space:]]*#' Makefile | grep '^[^ ]' | grep -v ':' | head -1; then
+            echo "Makefile should use tabs for rules"
+          fi
