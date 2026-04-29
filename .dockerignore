@@ -1,0 +1,50 @@
+# .dockerignore — optimize Docker build context
+
+# Build artifacts
+build_*/
+*.elf
+*.hex
+*.bin
+*.map
+*.o
+
+# Git
+.git/
+.gitignore
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation
+*.md
+README*
+DOCKER*
+BUILD*
+EEPROM*
+PLATFORMS*
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Docker
+Dockerfile*
+docker-compose.yml
+.dockerignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# System
+.cache/
+tmp/
+*.log
