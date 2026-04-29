@@ -1,0 +1,37 @@
+# Dockerfile.esp32s3 — minimal, ESP32-S3 only
+# Base: Debian 13
+# Size: ~1.2 GB (Xtensa toolchain is large)
+
+FROM debian:trixie
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    wget \
+    make \
+    python3 \
+    python3-pip \
+    ca-certificates \
+    flex \
+    bison \
+    gperf \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+
+# Download and extract Xtensa ESP32-S3 toolchain
+RUN mkdir -p /opt/xtensa && cd /opt/xtensa && \
+    wget -q https://github.com/espressif/crosstool-NG/releases/download/esp-12.2.0_20230208/xtensa-esp32s3-elf-12.2.0_20230208-x86_64-linux-gnu.tar.xz && \
+    tar -xf xtensa-esp32s3-elf-12.2.0_20230208-x86_64-linux-gnu.tar.xz && \
+    rm -f xtensa-esp32s3-elf-12.2.0_20230208-x86_64-linux-gnu.tar.xz
+
+# Install esptool.py
+RUN pip3 install --no-cache-dir esptool
+
+# Setup PATH
+ENV PATH="/opt/xtensa/xtensa-esp32s3-elf/bin:${PATH}"
+
+WORKDIR /workspace
+VOLUME ["/workspace"]
+
+CMD ["/bin/bash"]

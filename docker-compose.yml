@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # All platforms (recommended)
+  barelog:
+    build:
+      context: .
+      dockerfile: Dockerfile_optimized
+    image: barelog:latest
+    container_name: barelog-dev
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+  # ATmega328P only (minimal)
+  barelog-avr:
+    build:
+      context: .
+      dockerfile: Dockerfile.atmega328p
+    image: barelog:avr
+    container_name: barelog-avr-dev
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+  # ARM platforms only (RP2040, nRF52840)
+  barelog-arm:
+    build:
+      context: .
+      dockerfile: Dockerfile.arm
+    image: barelog:arm
+    container_name: barelog-arm-dev
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+  # RISC-V only (CH32V203)
+  barelog-riscv:
+    build:
+      context: .
+      dockerfile: Dockerfile.riscv
+    image: barelog:riscv
+    container_name: barelog-riscv-dev
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+  # ESP32-S3 only
+  barelog-esp32s3:
+    build:
+      context: .
+      dockerfile: Dockerfile.esp32s3
+    image: barelog:esp32s3
+    container_name: barelog-esp32s3-dev
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    command: /bin/bash

@@ -1,0 +1,103 @@
+# Dockerfile for barelog — all platforms, optimized
+# Base: Debian 13 (trixie)
+# Multi-stage with proper layer reuse
+
+# ================================================================
+# Stage 1: Base builder with common tools
+# ================================================================
+
+FROM debian:trixie as builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    wget \
+    curl \
+    make \
+    cmake \
+    python3 \
+    python3-pip \
+    ca-certificates \
+    vim \
+    nano \
+    flex \
+    bison \
+    gperf \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+
+# ================================================================
+# Stage 2: Add ARM toolchain to builder
+# ================================================================
+
+FROM builder as with-arm
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    arm-none-eabi-gcc \
+    arm-none-eabi-gdb \
+    libnewlib-arm-none-eabi \
+    && rm -rf /var/lib/apt/lists/*
+
+# ================================================================
+# Stage 3: Add RISC-V toolchain
+# ================================================================
+
+FROM with-arm as with-riscv
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    riscv64-unknown-elf-gcc \
+    riscv64-unknown-elf-gdb \
+    && rm -rf /var/lib/apt/lists/*
+
+# ================================================================
+# Stage 4: Add AVR toolchain
+# ================================================================
+
+FROM with-riscv as with-avr
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc-avr \
+    avr-libc \
+    avrdude \
+    && rm -rf /var/lib/apt/lists/*
+
+# ================================================================
+# Stage 5: Add Xtensa toolchain and esptool
+# ================================================================
+
+FROM with-avr as with-xtensa
+
+# Download and extract Xtensa ESP32-S3 toolchain
+RUN mkdir -p /opt/xtensa && cd /opt/xtensa && \
+    wget -q https://github.com/espressif/crosstool-NG/releases/download/esp-12.2.0_20230208/xtensa-esp32s3-elf-12.2.0_20230208-x86_64-linux-gnu.tar.xz && \
+    tar -xf xtensa-esp32s3-elf-12.2.0_20230208-x86_64-linux-gnu.tar.xz && \
+    rm -f xtensa-esp32s3-elf-12.2.0_20230208-x86_64-linux-gnu.tar.xz && \
+    rm -rf /opt/xtensa/.* 2>/dev/null; true
+
+# Install esptool.py
+RUN pip3 install --no-cache-dir esptool
+
+# ================================================================
+# Final: Runtime image with all toolchains
+# ================================================================
+
+FROM debian:trixie
+
+# Copy only the necessary runtime files from final builder stage
+COPY --from=with-xtensa / /
+
+# Install only runtime dependencies (avoid reinstalling tools)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Setup PATH for Xtensa
+ENV PATH="/opt/xtensa/xtensa-esp32s3-elf/bin:${PATH}"
+
+# Create workspace
+WORKDIR /workspace
+VOLUME ["/workspace"]
+
+# Default command
+CMD ["/bin/bash"]

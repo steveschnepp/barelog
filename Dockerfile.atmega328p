@@ -1,0 +1,20 @@
+# Dockerfile.atmega328p — minimal, ATmega328P only
+# Base: Debian 13
+# Size: ~500 MB
+
+FROM debian:trixie
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    wget \
+    make \
+    gcc-avr \
+    avr-libc \
+    avrdude \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+VOLUME ["/workspace"]
+
+CMD ["/bin/bash"]
