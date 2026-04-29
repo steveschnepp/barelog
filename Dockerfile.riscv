@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     wget \
     make \
-    riscv64-unknown-elf-gcc \
-    riscv64-unknown-elf-gdb \
+    gcc-riscv64-unknown-elf \
+    binutils-riscv64-unknown-elf \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace

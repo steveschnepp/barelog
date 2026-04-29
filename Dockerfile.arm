@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     wget \
     make \
-    arm-none-eabi-gcc \
-    arm-none-eabi-gdb \
+    gcc-arm-none-eabi \
     libnewlib-arm-none-eabi \
     && rm -rf /var/lib/apt/lists/*
 
