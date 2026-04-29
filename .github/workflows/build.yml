@@ -40,7 +40,7 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
             barelog:ci \
-            make PLATFORM=${{ matrix.platform }} size
+            make PLATFORM=${{ matrix.platform }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
