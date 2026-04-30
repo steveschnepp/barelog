@@ -134,7 +134,7 @@ void spi_read_buf(uint8_t *buf, uint16_t len)
 /* Timer1 — 500 ms CTC for idle flush                                 */
 /* ------------------------------------------------------------------ */
 
-volatile static uint8_t timer_pending;
+static volatile uint8_t timer_pending;
 
 void timer_init(void)
 {
@@ -175,20 +175,7 @@ void eeprom_init(void)
 	/* nothing needed on AVR */
 }
 
-uint8_t eeprom_read_byte(uint16_t addr)
-{
-	return eeprom_read_byte((uint8_t *)addr);
-}
-
-void eeprom_write_byte(uint16_t addr, uint8_t val)
-{
-	eeprom_write_byte((uint8_t *)addr, val);
-}
-
-void eeprom_update_byte(uint16_t addr, uint8_t val)
-{
-	eeprom_update_byte((uint8_t *)addr, val);
-}
+/* native AVR functions from <avr/eeprom.h> used directly */
 
 /* ------------------------------------------------------------------ */
 /* GPIO — LED on PD5                                                  */

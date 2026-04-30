@@ -39,16 +39,6 @@ extern void error_halt(uint8_t code) __attribute__((noreturn));
 #define ERR_STACK 6
 
 /*
- * Timer1 COMPA interrupt: fires every 500 ms (OCR1A = 7812, prescaler
- * fosc/1024 at 16 MHz). Sets flush_pending to signal the main loop that
- * it is time to flush if the ring has been idle.
- */
-ISR(TIMER1_COMPA_vect)
-{
-	log_state.flush_pending = 1;
-}
-
-/*
  * Scan buf[0..len-1] for the escape character.
  * Updates esc_seen across calls: state persists between span_a and span_b
  * so an escape sequence that straddles the ring wrap is detected correctly.

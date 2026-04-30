@@ -2,18 +2,9 @@
 # Base: Debian 13
 # Size: ~600 MB
 
-FROM debian:trixie
+FROM barelog:base
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    wget \
-    make \
     gcc-riscv64-unknown-elf \
     binutils-riscv64-unknown-elf \
     && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /workspace
-VOLUME ["/workspace"]
-
-CMD ["/bin/bash"]

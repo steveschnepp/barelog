@@ -43,8 +43,8 @@ static void make_logname(uint8_t name[11], uint16_t num)
  * Scan the root directory cluster chain for name[11].
  *
  * Returns:
- *   1  entry found; *found_lba/*found_off point to it.
- *   0  not found; *empty_lba/*empty_off hold first available slot
+ *   1  entry found; *found_lba and *found_off point to it.
+ *   0  not found; *empty_lba and *empty_off hold first available slot
  *      (0x00 end-of-directory or 0xE5 deleted entry).
  *  -1  SD error.
  *

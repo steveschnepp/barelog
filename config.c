@@ -1,6 +1,12 @@
 #include <stdint.h>
-#include <avr/eeprom.h>
 #include "config.h"
+
+
+/* For AVR: eeprom_read/write_dword are needed by config_load/save */
+#if defined(__AVR_ATmega328P__)
+#include <avr/eeprom.h>
+#endif
+
 
 /*
  * Single source of truth for the prealloc size table.

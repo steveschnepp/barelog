@@ -47,9 +47,13 @@ uint8_t uart_getc_poll(void);
 void spi_init(void);
 void spi_set_fast(void);
 
+#if !defined(__AVR_ATmega328P__)
+/* Non-AVR platforms: declare as extern functions */
 uint8_t spi_transfer(uint8_t data);
 void spi_cs_assert(void);
 void spi_cs_release(void);
+#endif
+/* AVR defines these as static inline in the #if block below */
 
 void spi_write_buf(const uint8_t *buf, uint16_t len);
 void spi_write_zeros(uint16_t len);
@@ -68,10 +72,15 @@ void timer_restart(void);
 /* EEPROM — byte-level access                                         */
 /* ------------------------------------------------------------------ */
 
+/* EEPROM: AVR uses native <avr/eeprom.h>, others use platform impl */
+#if !defined(__AVR_ATmega328P__)
 void eeprom_init(void);
 uint8_t eeprom_read_byte(uint16_t addr);
 void eeprom_write_byte(uint16_t addr, uint8_t val);
 void eeprom_update_byte(uint16_t addr, uint8_t val);
+#else
+#include <avr/eeprom.h>
+#endif
 
 /* ------------------------------------------------------------------ */
 /* GPIO — STAT LED                                                    */
