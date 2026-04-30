@@ -31,7 +31,7 @@ jobs:
           file: ./Dockerfile.${{ matrix.platform }}
           push: false
           load: true
-          tags: barelog:ci
+          tags: barelog:${{ matrix.platform }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -39,7 +39,7 @@ jobs:
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
-            barelog:ci \
+            barelog:${{ matrix.platform }} \
             make PLATFORM=${{ matrix.platform }}
 
       - name: Upload artifacts
