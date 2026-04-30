@@ -14,7 +14,8 @@ jobs:
     strategy:
       matrix:
         platform: [atmega328p, ch32v203, rp2040, nrf52840, esp32s3]
-      fail-fast: false
+      fail-fast: true
+      max-parallel: 1
 
     steps:
       - name: Checkout
