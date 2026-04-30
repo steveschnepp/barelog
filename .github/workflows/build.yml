@@ -31,7 +31,6 @@ jobs:
           context: .
           file: ./Dockerfile.base
           push: false
-          load: true
           tags: barelog:base
           cache-from: type=gha
           cache-to: type=gha,mode=max
